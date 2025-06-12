@@ -1,0 +1,104 @@
+{% extends "myapp/base.html" %}
+{% load static %}
+
+{% block content %}
+  <style>
+    
+    .form-wrapper {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 30px;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        border: 1px solid #ddd;
+    }
+
+    
+    .form-wrapper h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #333;
+        font-size: 28px;
+        font-weight: 700;
+        font-family: 'Arial', sans-serif;
+    }
+
+  
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #555;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+        color: #333;
+        background-color: #fff;
+        box-sizing: border-box;
+    }
+
+    .form-group input::placeholder {
+        color: #888;
+    }
+
+    
+    .submit-btn {
+        display: block;
+        width: 100%;
+        padding: 14px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #4caf50; 
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+        text-transform: uppercase;
+    }
+
+    .submit-btn:hover {
+        background-color: #388e3c; 
+        transform: translateY(-2px);
+    }
+
+  
+    .return-link {
+        display: block;
+        text-align: center;
+        margin-top: 25px;
+        font-size: 16px;
+        color: #007bff;
+        text-decoration: none;
+        transition: color 0.3s, text-decoration 0.2s;
+    }
+
+    .return-link:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+  </style>
+
+  <div class="form-wrapper">
+    <h2>User Registration</h2>
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        {{ form.as_p }}
+      </div>
+      <button type="submit" class="submit-btn">Register</button>
+    </form>
+    <a href="{% url 'home' %}" class="return-link">Retour</a>
+  </div>
+{% endblock %}

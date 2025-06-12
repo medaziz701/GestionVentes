@@ -1,0 +1,124 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Inscription en attente{% endblock %}
+
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+
+    body {
+        font-family: 'Nunito', sans-serif;
+        background-color: #f4f6f9;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+    }
+
+    .navbar {
+        background-color: #1f2a35;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #fff;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .navbar-logo:hover {
+        color: #d0e0ff;
+    }
+
+    .navbar-links {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .navbar-links a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 1.1rem;
+        transition: color 0.3s ease;
+    }
+
+    .navbar-links a:hover {
+        color: #d0e0ff;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .container.success-container {
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #004080;
+        text-align: center;
+        margin-top: 2.5rem;
+        margin-bottom: 1.5rem;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .confirmation-message {
+        font-size: 1.3rem;
+        color: #333;
+        background-color: #f0f8ff;
+        border: 1px solid #cce5ff;
+        padding: 1rem 1.5rem;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    p {
+        font-size: 1.2rem;
+        color: #6c757d;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .back-button {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background-color: #004080;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 0.5rem;
+        font-size: 1.1rem;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .back-button:hover {
+        background-color: #003366;
+    }
+</style>
+
+<div class="container success-container">
+    <h1>Votre inscription est en attente de confirmation</h1>
+    <p class="confirmation-message">
+        Veuillez patienter jusqu'à ce que votre inscription soit confirmée par un administrateur.
+    </p>
+    <a href="{% url 'home' %}" class="back-button">Retour à l'accueil</a>
+</div>
+
+{% endblock %}

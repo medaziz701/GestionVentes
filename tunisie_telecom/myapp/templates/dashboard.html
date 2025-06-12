@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableaux de Bord</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #007bff;
+            color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .return-button {
+            background-color: #ffffff;
+            border: none;
+            color: #007bff;
+            padding: 12px 24px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .return-button:hover {
+            background-color: #e2e6ea;
+            color: #0056b3;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            width: 90%;
+            max-width: 1200px;
+            padding: 20px;
+        }
+        .chart-container {
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 550px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .chart-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+        .chart-container canvas {
+            width: 100% !important;
+            height: auto !important;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="header">
+        <button class="return-button" onclick="window.history.back();">Retour</button>
+        <h2>Tableaux de Bord</h2>
+    </div>
+    <div class="dashboard">
+        <div class="chart-container">
+            <canvas id="tauxChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="tauxParMoisChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="pieChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="sumTauxByYearChart"></canvas>
+        </div>
+    </div>
+    <script>
+        const data = [
+            {% for entry in data %}
+            {
+                date: "{{ entry.Date_mensuel }}",
+                categorie: "{{ entry.Categorie }}",
+                somme: {{ entry.Somme_Quantite_Vendue }},
+                objectif: {{ entry.Objectif_Quantite }},
+                taux: {{ entry.Taux }}
+            },
+            {% endfor %}
+        ];
+
+        function formatDate(dateStr) {
+            const [year, month] = dateStr.split('-');
+            const moisNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+            return `${moisNames[parseInt(month, 10) - 1]} ${year}`;
+        }
+
+        const tauxData = {};
+        data.forEach(entry => {
+            const formattedDate = formatDate(entry.date);
+            const key = `${formattedDate} - ${entry.categorie}`;
+            
+            if (!tauxData[key]) {
+                tauxData[key] = 0;
+            }
+            tauxData[key] += entry.taux;
+        });
+
+        const sortedLabels = Object.keys(tauxData).sort((a, b) => {
+            const [dateA] = a.split(' - ');
+            const [dateB] = b.split(' - ');
+            const dateAParts = dateA.split(' ');
+            const dateBParts = dateB.split(' ');
+            const monthOrder = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+            return (dateAParts[1] - dateBParts[1]) || (monthOrder.indexOf(dateAParts[0]) - monthOrder.indexOf(dateBParts[0]));
+        });
+
+        const sortedData = sortedLabels.map(label => tauxData[label]);
+
+        const tauxChartCtx = document.getElementById('tauxChart').getContext('2d');
+        new Chart(tauxChartCtx, {
+            type: 'line',
+            data: {
+                labels: sortedLabels,
+                datasets: [{
+                    label: 'Taux par Date et Catégorie',
+                    data: sortedData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.3)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Taux par Date et Catégorie'
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            autoSkip: true,
+                            maxTicksLimit: 20
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        const moisData = {};
+        data.forEach(entry => {
+            const moisNum = parseInt(entry.date.split('-')[1], 10);
+            const moisLabel = formatDate(entry.date).split(' ')[0];
+
+            if (!moisData[moisLabel]) {
+                moisData[moisLabel] = 0;
+            }
+            moisData[moisLabel] += entry.taux;
+        });
+
+        const moisLabels = Object.keys(moisData);
+
+        const tauxParMoisChartCtx = document.getElementById('tauxParMoisChart').getContext('2d');
+        new Chart(tauxParMoisChartCtx, {
+            type: 'bar',
+            data: {
+                labels: moisLabels,
+                datasets: [{
+                    label: 'Taux par Mois',
+                    data: moisLabels.map(label => moisData[label]),
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Taux par Mois'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        const anneeData = {};
+        data.forEach(entry => {
+            const annee = entry.date.split('-')[0];
+
+            if (!anneeData[annee]) {
+                anneeData[annee] = 0;
+            }
+            anneeData[annee] += entry.taux;
+        });
+
+        const anneeLabels = Object.keys(anneeData);
+
+        const sumTauxByYearChartCtx = document.getElementById('sumTauxByYearChart').getContext('2d');
+        new Chart(sumTauxByYearChartCtx, {
+            type: 'bar',
+            data: {
+                labels: anneeLabels,
+                datasets: [{
+                    label: 'Taux par Année',
+                    data: anneeLabels.map(label => anneeData[label]),
+                    backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Taux par Année'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        const pieData = {};
+        data.forEach(entry => {
+            if (!pieData[entry.categorie]) {
+                pieData[entry.categorie] = 0;
+            }
+            pieData[entry.categorie] += entry.taux;
+        });
+
+        const pieLabels = Object.keys(pieData);
+        const pieValues = Object.values(pieData);
+
+        const pieChartCtx = document.getElementById('pieChart').getContext('2d');
+        new Chart(pieChartCtx, {
+            type: 'pie',
+            data: {
+                labels: pieLabels,
+                datasets: [{
+                    label: 'Répartition du Taux par Catégorie',
+                    data: pieValues,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Répartition du Taux par Catégorie'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

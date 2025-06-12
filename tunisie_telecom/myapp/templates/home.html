@@ -1,0 +1,209 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+
+    body {
+        font-family: 'Nunito', sans-serif;
+        background-color: #f4f6f9;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .welcome-heading {
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: #004080;
+        text-align: center;
+        margin: 2.5rem 0;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .welcome-text {
+        font-size: 1.2rem;
+        color: #6c757d;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 2.5rem;
+    }
+
+    .custom-btn {
+        padding: 0.75rem 1.75rem;
+        border-radius: 0.5rem;
+        font-size: 1.1rem;
+        text-align: center;
+        display: inline-block;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        color: #fff;
+    }
+
+    .custom-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-primary.custom-btn {
+        background-color: #0056b3;
+    }
+
+    .btn-primary.custom-btn:hover {
+        background-color: #003f7f;
+    }
+
+    .btn-secondary.custom-btn {
+        background-color: #868e96;
+    }
+
+    .btn-secondary.custom-btn:hover {
+        background-color: #6c757d;
+    }
+
+    form {
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        max-width: 450px;
+        margin: 2rem auto;
+        border: 1px solid #e0e0e0;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ced4da;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        box-sizing: border-box;
+        background-color: #fff;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-group input:focus {
+        border-color: #0056b3;
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        padding: 0.75rem;
+        border: none;
+        border-radius: 0.5rem;
+        background-color: #0056b3;
+        color: #fff;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    button[type="submit"]:hover {
+        background-color: #003f7f;
+        transform: translateY(-3px);
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-container h2 {
+        margin-bottom: 1.75rem;
+        font-size: 2rem;
+        color: #004080;
+        text-align: center;
+    }
+
+    .error {
+        color: #dc3545;
+        font-size: 1rem;
+        margin-bottom: 1.25rem;
+        text-align: center;
+    }
+
+    
+    .form-container .form-group input {
+        border: 2px solid #0056b3;
+        border-radius: 0.75rem;
+        padding: 1rem;
+    }
+
+    .form-container .form-group input:focus {
+        border-color: #003f7f;
+        box-shadow: 0 0 0 0.25rem rgba(0, 56, 179, 0.25);
+    }
+</style>
+  
+
+
+<div class="container mt-4">
+    <h1 class="welcome-heading">Bienvenue sur la page d'accueil</h1>
+    <p class="welcome-text">Cette application vous permet de gérer et d'évaluer les performances de vente.</p>
+    <p class="welcome-text">Pour accéder aux fonctionnalités de cette application, veuillez vous connecter ou vous inscrire.</p>
+</div>
+
+<div class="container mt-4">
+    <h2 class="form-container">Connexion</h2>
+    <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="error">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="form-group">
+            <label for="username">Nom d'utilisateur:</label>
+            <input type="text" id="username" name="username" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Mot de passe:</label>
+            <input type="password" id="password" name="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Se connecter</button>
+    </form>
+</div>
+
+<div class="container mt-4 button-container">
+    <a href="{% url 'admin_registration' %}" class="btn btn-primary custom-btn">
+        Inscription Admin
+    </a>
+    <a href="{% url 'user_registration' %}" class="btn btn-secondary custom-btn">
+        Inscription Utilisateur
+    </a>
+</div>
+
+{% endblock %}

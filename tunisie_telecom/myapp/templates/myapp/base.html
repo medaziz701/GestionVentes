@@ -1,0 +1,214 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e9ecef;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin: 30px 0;
+            font-size: 32px;
+            color: #212529;
+            font-weight: 600;
+        }
+        
+        
+        table {
+            width: 85%;
+            margin: 0 auto;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 15px 20px;
+            text-align: left;
+        }
+        th {
+            background-color: #343a40;
+            color: #ffffff;
+            font-weight: 500;
+        }
+        td {
+            border-top: 1px solid #dee2e6;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #e2e6ea;
+        }
+        
+       
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        button:active {
+            background-color: #004085;
+            transform: translateY(0);
+        }
+        
+        
+        a {
+            color: #17a2b8;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        a:hover {
+            background-color: #e2e6ea;
+            color: #0056b3;
+        }
+        
+        
+        form {
+            margin: 0 auto;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-control {
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+        }
+        .form-label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        
+        .navbar {
+            background-color: #2d3841;
+            padding: 0.5rem 1rem;
+        }
+        .navbar-brand, .nav-link {
+            color: #ffffff !important;
+        }
+        .navbar-brand:hover, .nav-link:hover {
+            color: #ffc107 !important;
+        }
+        .navbar-brand-img {
+            max-height: 50px;
+            width: auto;
+        }
+        .navbar-custom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .navbar-text {
+            color: #ffffff;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+        .view-users-link {
+            color: rgba(5, 110, 248, 0.705) !important;
+        }
+    </style>
+</head>
+<body>
+    
+   
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        
+        <div class="container">
+            <a class="navbar-brand" href="#"><h2>Home</h2></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    {% if user.is_authenticated %}
+                    <li  class="nav-item {% if request.path == '/upload/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'upload_file' %}">Upload File</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/set_objective/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'objectif_form' %}">Set Objective</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/dashboard/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/data/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'data_page' %}">Data</a>
+                    </li>
+                    {% if user.is_staff %}
+                    <li class="nav-item {% if request.path == '/view_users/' %}active{% endif %}">
+                        <a class="nav-link view-users-link" href="{% url 'view_users' %}">View Users</a>
+                    </li>
+                    {% endif %}
+                    {% endif %}
+                </ul>
+              
+                <ul class="navbar-nav ml-auto">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <div class="navbar-custom d-flex align-items-center">
+                    <span class="navbar-text">Évaluation des Performances de Vente</span>
+                    <a href="#">
+                        <img src="{% static 'img/logo.png' %}" alt="Logo" class="navbar-brand-img img-fluid">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-4">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js" integrity="sha384-7JirA9baxrx6fpQCG8FZssA1b/6u5P96twq9lLJUJVN1XE9c9j8nJ3qu7Aho5QZO" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-4SKwTGb/sLwKZ6P0CkYYxc4p3oXp1/qJk5weRy0BCK6LZdDvVJFnRk2k9ZKjcVu2" crossorigin="anonymous"></script>
+</body>
+</html>

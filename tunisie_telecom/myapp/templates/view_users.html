@@ -1,0 +1,175 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}List of Users{% endblock %}
+
+{% block content %}
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e9ecef;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin: 30px 0;
+            font-size: 32px;
+            color: #212529;
+            font-weight: 600;
+        }
+        
+        table {
+            width: 85%;
+            margin: 0 auto;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 15px 20px;
+            text-align: left;
+        }
+        th {
+            background-color: #343a40;
+            color: #ffffff;
+            font-weight: 500;
+        }
+        td {
+            border-top: 1px solid #dee2e6;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #e2e6ea;
+        }
+        
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        button:active {
+            background-color: #004085;
+            transform: translateY(0);
+        }
+        
+        a {
+            color: #17a2b8;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        a:hover {
+            background-color: #e2e6ea;
+            color: #0056b3;
+        }
+        
+        form {
+            display: inline;
+        }
+        
+        .confirm-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .confirm-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        .confirm-btn:active {
+            background-color: #1e7e34;
+            transform: translateY(0);
+        }
+        
+        .reject-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .reject-btn:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+        .reject-btn:active {
+            background-color: #bd2130;
+            transform: translateY(0);
+        }
+    </style>
+
+    <h1>List of Users</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.email }}</td>
+                <td>{{ user.username }}{% if user == request.user %} (vous){% endif %}</td>
+                <td>
+                    <form action="{% url 'delete_user' user.id %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No users found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <h1>Utilisateurs en attente de confirmation</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in confirmed %}
+            <tr>
+                <td>{{ user.email }}</td>
+                <td>{{ user.username }}</td>
+                <td>
+                    <a href="{% url 'confirm_user' user.id %}" class="confirm-btn">Confirmer</a>
+                    <a href="{% url 'reject_user' user.id %}" class="reject-btn">Refuser</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
