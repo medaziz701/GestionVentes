@@ -1,0 +1,1 @@
+Développement d'une application web offrant une interface intuitive pour l'inscription et la connexion des utilisateurs. Intégration de fonctionnalités de téléchargement de fichiers Excel et de visualisation des données via un tableau de bord interactif. Mise en place d'outils d'analyse approfondie pour garantir une expérience utilisateur fluide et une prise de décision éclairée
