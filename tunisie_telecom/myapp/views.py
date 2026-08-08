@@ -5,7 +5,7 @@ from .forms import UserRegistrationForm, AdminRegistrationForm
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
 from .forms import UploadFileForm, ObjectifForm
-from .models import Objectif, Resultat, Vente
+from .models import Objectif, Resultat, Vente, admin
 from .utils import generate_results
 from django.db import connection
 from django.db.utils import ProgrammingError, OperationalError
@@ -14,8 +14,7 @@ from datetime import datetime
 from django.contrib.auth import logout
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import user_passes_test
-from django.shortcuts import get_object_or_404, redirect
-from .models import admin
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
