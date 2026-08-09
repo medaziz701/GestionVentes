@@ -380,24 +380,7 @@ def handle_uploaded_file(file):
         date_obj = pd.to_datetime(date_str, errors='coerce')
         if pd.isnull(date_obj):
             return None
-        return date_obj.strftime('%Y-%m-%d')
-
-    conn = mysql.connector.connect(
-        host='localhost',
-        user='root',
-        password='',
-        database='tunisie_telecom'
-    )
-    cursor = conn.cursor()
-
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS ventes (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        date DATE,
-        produit VARCHAR(255),
-        quantite INT
-    )
-    ''')
+        return date_obj.date()
 
     def process_section(df_section):
         headers = df_section.iloc[0]
@@ -415,9 +398,11 @@ def handle_uploaded_file(file):
                 quantite = ligne[col]
 
                 if pd.notna(quantite) and date is not None:
-                    cursor.execute('''
-                    INSERT INTO ventes (date, produit, quantite) VALUES (%s, %s, %s)
-                    ''', (date, produit, quantite))
+                    Vente.objects.create(
+                        date=date,
+                        produit=str(produit),
+                        quantite=int(quantite)
+                    )
 
     section_start = 0
     for i in range(len(df)):
@@ -425,9 +410,6 @@ def handle_uploaded_file(file):
             process_section(df.iloc[section_start:i])
             section_start = i + 1
     process_section(df.iloc[section_start:])
-
-    conn.commit()
-    conn.close()
 @login_required
 def upload_file(request):
     if request.method == 'POST':
