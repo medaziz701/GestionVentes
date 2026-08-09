@@ -1,7 +1,6 @@
 
-from .models import Objectif, Vente
+from .models import Objectif, Vente, CustomUser
 from calendar import monthrange
-from .models import admin  
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
@@ -10,12 +9,12 @@ from django.contrib.auth.forms import UserCreationForm
 
 class AdminRegistrationForm(UserCreationForm):
     class Meta:
-        model = admin
+        model = CustomUser
         fields = ['username', 'email', 'password1', 'password2']
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        if admin.objects.filter(email=email).exists():
+        if CustomUser.objects.filter(email=email).exists():
             raise forms.ValidationError('This email address is already in use.')
         return email
 
@@ -29,12 +28,12 @@ class AdminRegistrationForm(UserCreationForm):
 
 class UserRegistrationForm(UserCreationForm):
     class Meta:
-        model = admin
+        model = CustomUser
         fields = ['username', 'email', 'password1', 'password2']
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        if admin.objects.filter(email=email).exists():
+        if CustomUser.objects.filter(email=email).exists():
             raise forms.ValidationError('This email address is already in use.')
         return email
 
