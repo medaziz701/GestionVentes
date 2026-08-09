@@ -383,11 +383,12 @@ def handle_uploaded_file(file):
         return date_obj.date()
 
     def process_section(df_section):
-        headers = df_section.iloc[0]
+        headers = df_section.iloc[0].values
         df_section = df_section[1:]
         df_section.columns = headers
 
-        for i, ligne in df_section.iterrows():
+        for idx in range(len(df_section)):
+            ligne = df_section.iloc[idx]
             produit = ligne[headers[0]]
 
             if pd.isna(produit) or produit == '':
@@ -397,11 +398,11 @@ def handle_uploaded_file(file):
                 date = convert_date(col)
                 quantite = ligne[col]
 
-                if pd.notna(quantite).item() and date is not None:
+                if pd.notna(quantite) and date is not None:
                     Vente.objects.create(
                         date=date,
                         produit=str(produit),
-                        quantite=int(quantite.item())
+                        quantite=int(quantite)
                     )
 
     section_start = 0
