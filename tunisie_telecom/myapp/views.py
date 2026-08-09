@@ -383,27 +383,55 @@ def handle_uploaded_file(file):
         return date_obj.date()
 
     def process_section(df_section):
-        headers = df_section.iloc[0].values
-        df_section = df_section[1:]
-        df_section.columns = headers
-
+        # Find the header row (row containing "Produit" in first column)
+        header_row_idx = None
         for idx in range(len(df_section)):
-            ligne = df_section.iloc[idx]
-            produit = ligne[headers[0]]
-
-            if pd.isna(produit) or produit == '':
+            first_cell = df_section.iloc[idx, 0]
+            if pd.notna(first_cell) and str(first_cell).strip() == 'Produit':
+                header_row_idx = idx
+                break
+        
+        if header_row_idx is None:
+            return  # No valid header row found
+        
+        # Extract headers from the header row
+        headers = df_section.iloc[header_row_idx].values
+        date_columns = headers[1:]  # All columns after "Produit"
+        
+        # Process data rows (after header row)
+        for idx in range(header_row_idx + 1, len(df_section)):
+            row = df_section.iloc[idx]
+            produit = row.iloc[0]
+            
+            # Skip empty product rows
+            if pd.isna(produit) or str(produit).strip() == '':
                 continue
-
-            for col in headers[1:]:
-                date = convert_date(col)
-                quantite = ligne[col]
-
-                if pd.notna(quantite) and date is not None:
+            
+            produit_str = str(produit).strip()
+            
+            # Process each date column
+            for col_idx, date_str in enumerate(date_columns):
+                date_value = convert_date(date_str)
+                
+                if date_value is None:
+                    continue
+                
+                # Get quantity from the corresponding column (header_row_idx + 1 + col_idx)
+                quantity_value = row.iloc[col_idx + 1]
+                
+                # Skip NaN quantities
+                if pd.isna(quantity_value):
+                    continue
+                
+                try:
+                    quantity_int = int(quantity_value)
                     Vente.objects.create(
-                        date=date,
-                        produit=str(produit),
-                        quantite=int(quantite)
+                        date=date_value,
+                        produit=produit_str,
+                        quantite=quantity_int
                     )
+                except (ValueError, TypeError):
+                    continue
 
     section_start = 0
     for i in range(len(df)):
