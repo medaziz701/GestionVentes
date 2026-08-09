@@ -1,6 +1,5 @@
 
 import pandas as pd
-import mysql.connector
 from .forms import UserRegistrationForm, AdminRegistrationForm
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
@@ -445,6 +444,7 @@ def upload_file(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             handle_uploaded_file(request.FILES['file'])
+            generate_results()
             return redirect('objectif_form')
     else:
         form = UploadFileForm()

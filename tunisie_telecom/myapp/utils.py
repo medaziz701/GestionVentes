@@ -1,36 +1,30 @@
 import pandas as pd
-import mysql.connector
-from .models import Resultat
+from .models import Resultat, Vente, Objectif
 
 def generate_results():
     print("Début de la génération des résultats...")
-    try:
-        conn = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='',
-            database='tunisie_telecom'
-        )
-        print("Connexion à la base de données réussie...")
-    except mysql.connector.Error as err:
-        print(f"Erreur de connexion: {err}")
+    
+    # Get data from Django ORM
+    ventes_data = Vente.objects.all().values('date', 'produit', 'quantite')
+    ventes_df = pd.DataFrame(list(ventes_data))
+    
+    if ventes_df.empty:
+        print("Aucune donnée de vente trouvée")
         return
-
-    c = conn.cursor()
-    c.execute("SELECT date, produit, quantite FROM ventes")
-    ventes_data = c.fetchall()
-    ventes_df = pd.DataFrame(ventes_data, columns=['date', 'produit', 'quantite'])
+    
     ventes_df['date'] = pd.to_datetime(ventes_df['date'])
     ventes_df['mois'] = ventes_df['date'].dt.month
 
-    c.execute("SELECT categorie, date, objectif_quantite FROM objectif")
-    objectifs_data = c.fetchall()
-    objectifs_df = pd.DataFrame(objectifs_data, columns=['categorie', 'date', 'objectif_quantite'])
+    objectifs_data = Objectif.objects.all().values('categorie', 'date', 'objectif_quantite')
+    objectifs_df = pd.DataFrame(list(objectifs_data))
+    
+    if objectifs_df.empty:
+        print("Aucun objectif trouvé")
+        return
+    
     objectifs_df['date'] = pd.to_datetime(objectifs_df['date'])
     objectifs_df['mois'] = objectifs_df['date'].dt.month
 
-    c.close()
-    conn.close()
     print("Données récupérées avec succès")
 
     def get_category(product, categories):
