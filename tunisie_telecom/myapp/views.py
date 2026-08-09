@@ -159,6 +159,7 @@ def waiting_for_confirmation(request):
 
 
 
+@login_required
 def edit_objectif(request, objectif_id):
     objectif = get_object_or_404(Objectif, pk=objectif_id)
     if request.method == 'POST':
@@ -201,7 +202,7 @@ def calculate_rate(somme_quantite_vendue, objectif_quantite):
 
 
 
-@staff_member_required
+@login_required
 def delete_objectif(request, objectif_id):
     objectif = get_object_or_404(Objectif, id=objectif_id)
     
