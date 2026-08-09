@@ -397,11 +397,11 @@ def handle_uploaded_file(file):
                 date = convert_date(col)
                 quantite = ligne[col]
 
-                if pd.notna(quantite) and date is not None:
+                if pd.notna(quantite).item() and date is not None:
                     Vente.objects.create(
                         date=date,
                         produit=str(produit),
-                        quantite=int(quantite)
+                        quantite=int(quantite.item())
                     )
 
     section_start = 0
