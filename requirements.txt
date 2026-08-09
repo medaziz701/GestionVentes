@@ -5,3 +5,4 @@ whitenoise==6.6.0
 pandas
 mysql-connector-python
 psycopg[binary]
+openpyxl
