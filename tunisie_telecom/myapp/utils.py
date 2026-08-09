@@ -31,14 +31,14 @@ def generate_results():
         product = product.lower().strip()
         for categorie in categories:
             if categorie.lower() in product:
-                return categorie
+                return categorie.lower()  # Return lowercase for case-insensitive comparison
         return "autre"
 
     categories = objectifs_df['categorie'].unique()
     ventes_df['categorie'] = ventes_df['produit'].apply(lambda p: get_category(p, categories))
 
     for _, objectif in objectifs_df.iterrows():
-        categorie = objectif['categorie']
+        categorie = objectif['categorie'].lower().strip()  # Normalize to lowercase
         date_limite = objectif['date']
         mois_limite = date_limite.month
 

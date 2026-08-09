@@ -75,7 +75,7 @@ class ObjectifForm(forms.ModelForm):
         categorie = self.cleaned_data['categorie']
         if categorie == '-------Veuillez choisir-------':
             raise forms.ValidationError("Veuillez choisir une catégorie valide.")
-        return categorie
+        return categorie.lower().strip()  # Normalize to lowercase for case-insensitive matching
 
     def get_categories(self):
         categories = [('-------Veuillez choisir-------', '-------Veuillez choisir-------')]  
