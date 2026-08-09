@@ -44,9 +44,7 @@
                     <th>Date</th>
                     <th>Catégorie</th>
                     <th>Objectif Quantité</th>
-                    {% if user.is_authenticated and user.is_staff %}
                     <th>Actions</th>
-                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -56,10 +54,8 @@
                         <td>{{ objectif.categorie }}</td>
                         <td>{{ objectif.objectif_quantite }}</td>
                         <td>
-                            {% if user.is_authenticated and user.is_staff %}
                             <a href="{% url 'edit_objectif' objectif.id %}" class="btn btn-warning btn-sm btn-custom">Modifier</a>
-                            <a href="{% url 'delete_objectif' objectif.id %}" class="btn btn-danger btn-sm btn-custom">Supprimer</a>
-                            {% endif %}
+                            <a href="{% url 'delete_objectif' objectif.id %}" class="btn btn-danger btn-sm btn-custom" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet objectif ?');">Supprimer</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -82,15 +78,23 @@
             </tr>
         </thead>
         <tbody>
-            {% for resultat in resultats %}
+            {% if resultats %}
+                {% for resultat in resultats %}
+                    <tr>
+                        <td>{{ resultat.Date_mensuel }}</td>
+                        <td>{{ resultat.Categorie }}</td>
+                        <td>{{ resultat.Somme_Quantite_Vendue }}</td>
+                        <td>{{ resultat.Objectif_Quantite }}</td>
+                        <td>{{ resultat.Taux }} <span class="percent-sign">%</span></td>
+                    </tr>
+                {% endfor %}
+            {% else %}
                 <tr>
-                    <td>{{ resultat.Date_mensuel }}</td>
-                    <td>{{ resultat.Categorie }}</td>
-                    <td>{{ resultat.Somme_Quantite_Vendue }}</td>
-                    <td>{{ resultat.Objectif_Quantite }}</td>
-                    <td>{{ resultat.Taux }} <span class="percent-sign">%</span></td>
+                    <td colspan="5" class="text-center">
+                        <em>Aucun résultat disponible. Assurez-vous d'avoir uploadé un fichier Excel et créé des objectifs correspondants.</em>
+                    </td>
                 </tr>
-            {% endfor %}
+            {% endif %}
         </tbody>
     </table>
 </div>
