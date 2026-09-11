@@ -12,10 +12,18 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+import secrets
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# In production, SECRET_KEY must be set via environment variable
+# In development, a random key will be generated if not set
 SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = secrets.token_urlsafe(50)
+    else:
+        raise ValueError("SECRET_KEY environment variable must be set in production")
 
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
