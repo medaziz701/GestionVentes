@@ -2,7 +2,7 @@
 
 > Application de gestion des ventes et des objectifs commerciaux pour Tunisie Telecom, permettant le suivi des performances, le téléchargement de données Excel et la définition d'objectifs par catégorie.
 
-![screenshot](./screenshots/preview.png)
+
 
 ## 🚀 Stack technique
 
