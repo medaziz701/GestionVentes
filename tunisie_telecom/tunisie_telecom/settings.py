@@ -84,22 +84,13 @@ WSGI_APPLICATION = 'tunisie_telecom.wsgi.application'
 
 
 # Database configuration
-# In production (Render), use DATABASE_URL
+# In production (Render), use DATABASE_URL (provided automatically)
 # In development, use SQLite
-if os.environ.get('DATABASE_URL'):
-    DATABASES = {
-        'default': dj_database_url.config(
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+DATABASES = {'default': dj_database_url.config(
+    default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
+    conn_max_age=600,
+    conn_health_checks=True,
+)}
 
 
 
