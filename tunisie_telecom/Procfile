@@ -1,0 +1,1 @@
+web: gunicorn tunisie_telecom.wsgi:application
