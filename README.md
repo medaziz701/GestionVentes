@@ -66,7 +66,7 @@ L'application sera accessible sur `http://127.0.0.1:8000`
 
 ## 🌐 Démo live
 
-En cours de déploiement
+https://gestionventes-o86w.onrender.com/
 
 ## 👤 Auteur
 
