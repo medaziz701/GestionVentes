@@ -6,3 +6,4 @@ pandas
 mysql-connector-python
 psycopg[binary]
 openpyxl
+dj-database-url
