@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 import secrets
-import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -84,13 +83,14 @@ WSGI_APPLICATION = 'tunisie_telecom.wsgi.application'
 
 
 # Database configuration
-# In production (Render), use DATABASE_URL (provided automatically)
-# In development, use SQLite
-DATABASES = {'default': dj_database_url.config(
-    default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
-    conn_max_age=600,
-    conn_health_checks=True,
-)}
+# For now, force SQLite to avoid PostgreSQL connection issues
+# TODO: Configure DATABASE_URL on Render for PostgreSQL when ready
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 
 
