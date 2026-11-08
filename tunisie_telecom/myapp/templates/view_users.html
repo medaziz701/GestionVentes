@@ -1,0 +1,103 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}List of Users{% endblock %}
+
+{% block content %}
+    <style>
+        form {
+            display: inline;
+        }
+
+        .confirm-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .confirm-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        .confirm-btn:active {
+            background-color: #1e7e34;
+            transform: translateY(0);
+        }
+
+        .reject-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .reject-btn:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+        .reject-btn:active {
+            background-color: #bd2130;
+            transform: translateY(0);
+        }
+    </style>
+
+    <h1>List of Users</h1>
+    <div class="table-responsive">
+        <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.email }}</td>
+                <td>{{ user.username }}{% if user == request.user %} (vous){% endif %}</td>
+                <td>
+                    <form action="{% url 'delete_user' user.id %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No users found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+    <h1>Utilisateurs en attente de confirmation</h1>
+    <div class="table-responsive">
+        <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in confirmed %}
+            <tr>
+                <td>{{ user.email }}</td>
+                <td>{{ user.username }}</td>
+                <td>
+                    <a href="{% url 'confirm_user' user.id %}" class="confirm-btn">Confirmer</a>
+                    <a href="{% url 'reject_user' user.id %}" class="reject-btn">Refuser</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% endblock %}
